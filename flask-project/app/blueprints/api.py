@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 import requests
 import pandas as pd
 import os 
@@ -36,21 +36,26 @@ def fetch_data(params):
  
 
 
-def fetch_car_cnt(year):
-    if year == 'all':
-      # 'year'와 'region'으로 그룹화하고 'cnt' 합계 계산
-      df = PD_ELECTRIC_VEHICLES.groupby(['year', 'region'])['cnt'].sum().reset_index()
+def fetch_car_cnt(year, region):
+    try:
+        if region in [None, ''] :
+            raise Exception(f"An error occurred: {str(e)}")
 
-      # 결과를 year와 region으로 정렬
-      df = df.sort_values(['year', 'region'])
-      df['month'] = None
-    else:
-      df = PD_ELECTRIC_VEHICLES[PD_ELECTRIC_VEHICLES['year'] == int(year)]
-
-    df = df.rename(columns={'year': 'year', 'region': 'do', 'cnt': 'elecar_enroll_num'})  
-    result = df.to_dict('records')
-
-    return result
+        filtered_df = PD_ELECTRIC_VEHICLES[PD_ELECTRIC_VEHICLES['region'] == region]
+        
+        if year == 'all':
+            df = filtered_df.groupby(['year', 'region'])['cnt'].sum().reset_index()
+            df = df.sort_values(['year', 'region'])
+            df['month'] = None
+        else:
+            df = filtered_df[filtered_df['year'] == int(year)]
+        
+        df = df.rename(columns={'year': 'year', 'region': 'do', 'cnt': 'elecar_enroll_num'})
+        
+        result = df.to_dict('records')
+        return result
+    except Exception as e:
+        raise Exception(f"An error occurred: {str(e)}")
 
 
 

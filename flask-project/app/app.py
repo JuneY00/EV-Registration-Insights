@@ -39,19 +39,21 @@ def get_data():
 @app.route('/api/carCnt', methods=['GET'])
 def get_carCnt():
     # 요청 시 필요한 파라미터 설정
-    year = request.args.get('year')
+    try:
+      year = request.args.get('year')
+      region = request.args.get('do')
 
-    # API로부터 데이터 가져오기
-    data = fetch_car_cnt(year)
+      # API로부터 데이터 가져오기
+      data = fetch_car_cnt(year, region)
 
-    print(data)
-
-    # Flask에서 JSON으로 반환
-    return Response(
-        json.dumps(data, ensure_ascii=False),
-        content_type='application/json; charset=utf-8'
-    )
+      # Flask에서 JSON으로 반환
+      return Response(
+          json.dumps(data, ensure_ascii=False),
+          content_type='application/json; charset=utf-8'
+      )
+    except Exception as e:
+        return render_template('500.html'), 500
 
 # Flask 서버 실행
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
