@@ -1,7 +1,8 @@
-from flask import Flask, jsonify, request
-from blueprints.api import fetch_data
+from flask import Flask, jsonify, request, Response
+from blueprints.api import fetch_data, fetch_car_cnt
 from dotenv import load_dotenv
 import os 
+import json
 from flask import Flask, render_template
 
 load_dotenv()
@@ -31,6 +32,25 @@ def get_data():
     
     # Flask에서 JSON으로 반환
     return jsonify(data)
+
+
+
+# API를 호출하고 데이터를 반환하는 라우트
+@app.route('/api/carCnt', methods=['GET'])
+def get_carCnt():
+    # 요청 시 필요한 파라미터 설정
+    year = request.args.get('year')
+
+    # API로부터 데이터 가져오기
+    data = fetch_car_cnt(year)
+
+    print(data)
+
+    # Flask에서 JSON으로 반환
+    return Response(
+        json.dumps(data, ensure_ascii=False),
+        content_type='application/json; charset=utf-8'
+    )
 
 # Flask 서버 실행
 if __name__ == '__main__':
