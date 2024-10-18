@@ -22,7 +22,7 @@ class EVChargeService:
         self.ENDPOINT_EVcharge = 'https://bigdata.kepco.co.kr/openapi/v1/EVcharge.do'
         self.API_KEY_EVcharge = os.getenv('API_KEY_EVcharge')         
 
-    @lru_cache(maxsize=None)
+    @lru_cache(maxsize=128)
     def get_ev_info(self, sido_code):
         params = {
             'apiKey': self.API_KEY_EVcharge,
@@ -82,7 +82,14 @@ class EVChargeApp:
         @self.app.route('/EVcharge/lists')
         def EVcharge_table():
             return render_template('EVCharger_lists.html')
+        
+        @self.app.route('/')
+        def home():
+            return render_template('index.html')
 
+        @self.app.route('/index')
+        def index():
+            return render_template('index.html')
 
     def get_ev_info_all(self):
         results = []
@@ -107,6 +114,8 @@ class EVChargeApp:
             }
         
         return results
+    
+    
     
     def run(self):
         self.app.run(debug=True)

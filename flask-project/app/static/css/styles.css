@@ -328,7 +328,6 @@ th {
 thead,
 tbody,
 tfoot,
-tr,
 td,
 th {
   border-color: inherit;
@@ -358,7 +357,12 @@ textarea {
   font-size: inherit;
   line-height: inherit;
 }
-
+.card-header {
+          cursor: pointer; /* 클릭 가능하게 설정 */
+          padding: 10px; /* 약간의 패딩 추가 */
+          background-color: #f8f9fa; /* 배경색 설정 */
+          border: 1px solid #dddddd; /* 테두리 추가 */
+      }
 button,
 select {
   text-transform: none;

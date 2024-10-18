@@ -21,7 +21,9 @@
             width: 100%;
             padding: 10px;
             font-size: 16px;
+            
         }
+
     </style>
 </head>
 <body>
@@ -54,8 +56,6 @@
 
                 data.forEach(item => {
                     item.forEach(i => {
-                        console.log(i); // 데이터 구조 확인
-
                         const row = tableBody.insertRow();
                         row.insertCell(0).textContent = i.metro;
                         row.insertCell(1).textContent = i.city;
