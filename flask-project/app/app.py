@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import os 
 import json
 from flask import Flask, render_template
-import urllib.parse
 import json
 from functools import lru_cache
 
