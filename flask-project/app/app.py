@@ -1,9 +1,7 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, render_template
 from blueprints.api import fetch_data, fetch_car_cnt
 from dotenv import load_dotenv
 import os 
-import json
-from flask import Flask, render_template
 import json
 from functools import lru_cache
 
@@ -34,17 +32,17 @@ class EVChargeService:
 
         data = fetch_data(self.ENDPOINT_EVcharge, self.API_KEY_EVcharge, params)
     
-        # place name, carTyle, stnPlace 
-        EVcharge_data=[]
-        for item in data.get('data',[]):
+        # place name, carType, stnPlace 
+        EVcharge_data = []
+        for item in data.get('data', []):
             EVcharge_data.append({
-                'metro' : item['metro'],
-                'city' : item['city'],
+                'metro': item['metro'],
+                'city': item['city'],
                 'stnPlace': item['stnPlace'],
-                'stnAddr' : item['stnAddr'], 
+                'stnAddr': item['stnAddr'], 
                 'rapidCnt': item['rapidCnt'],
-                'slowCnt' : item['slowCnt'],
-                'carType' : item['carType']
+                'slowCnt': item['slowCnt'],
+                'carType': item['carType']
             })
 
         return EVcharge_data
@@ -87,13 +85,13 @@ class EVChargeApp:
 
 
     def get_ev_info_all(self):
-            results = []
-            ev_data = self.ev_service.get_ev_data()
+        results = []
+        ev_data = self.ev_service.get_ev_data()
 
-            for _, data in ev_data:
-                results.append(data)
+        for _, data in ev_data:
+            results.append(data)
 
-            return results
+        return results
 
     def get_ev_info_charger_type(self):
         results = {}
@@ -123,17 +121,17 @@ app = Flask(__name__)
 def get_carCnt():
     # 요청 시 필요한 파라미터 설정
     try:
-      year = request.args.get('year')
-      region = request.args.get('do')
+        year = request.args.get('year')
+        region = request.args.get('do')
 
-      # API로부터 데이터 가져오기
-      data = fetch_car_cnt(year, region)
+        # API로부터 데이터 가져오기
+        data = fetch_car_cnt(year, region)
 
-      # Flask에서 JSON으로 반환
-      return Response(
-          json.dumps(data, ensure_ascii=False),
-          content_type='application/json; charset=utf-8'
-      )
+        # Flask에서 JSON으로 반환
+        return Response(
+            json.dumps(data, ensure_ascii=False),
+            content_type='application/json; charset=utf-8'
+        )
     except Exception as e:
         return render_template('500.html'), 500
 

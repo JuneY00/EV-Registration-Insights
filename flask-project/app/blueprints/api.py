@@ -14,8 +14,8 @@ PD_ELECTRIC_VEHICLES = pd.read_csv(csv_file_path)
 
 def fetch_car_cnt(year, region):
     try:
-        if region in [None, ''] :
-            raise Exception(f"An error occurred: {str(e)}")
+        if region in [None, '']:
+            raise ValueError("Region cannot be empty")
 
         filtered_df = PD_ELECTRIC_VEHICLES[PD_ELECTRIC_VEHICLES['region'] == region]
         
