@@ -1,0 +1,27 @@
+[
+    {
+        "year": "2024",
+        "month": "",
+        "do": "서울특별시",
+        "elecar_enroll_num" : "1234"
+    },
+    {
+        "year": "2024",
+        "month": "",
+        "do": "전라북도",
+        "elecar_enroll_num" : "1234"
+    },
+    {
+        "year": "2023",
+        "month": "None",
+        "do": "전라북도",
+        "elecar_enroll_num" : "1234"
+    },
+    {
+        "year": "2023",
+        "month": "03",
+        "do": "서울특별시",
+        "elecar_enroll_num" : "1234"
+    }
+    
+]
