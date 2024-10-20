@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>지역별 전기차 충전소</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>지역별 전기차 충전소</h1>
+    <canvas id="evChart" width="400" height="200"></canvas>
+    <script>
+        // API에서 데이터 가져오기
+        fetch('/api/get_EVinfo/CType')
+            .then(response => response.json())
+            .then(data => {
+                const labels = Object.keys(data);
+                const rapidData = labels.map(label => data[label].rapidTotal);
+                const slowData = labels.map(label => data[label].slowTotal);
+
+                const ctx = document.getElementById('evChart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '급속충전기 대수',
+                            data: rapidData,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: '완속충전기 대수',
+                            data: slowData,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>

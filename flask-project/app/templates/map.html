@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>전기차 충전소 분포도</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>지역별 전기차 충전소 분포도</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // 지도 초기화
+        const map = L.map('map').setView([37.5665, 126.978], 10); // 서울 중심
+
+        // OSM 타일 레이어 추가
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // API에서 전기차 충전소 데이터 가져오기
+        fetch('/api/get_EVinfo/all')
+            .then(response => response.json())
+            .then(data => {
+
+                // 데이터의 첫 50개 항목만 가져오기
+                const limitedData = data.flat().slice(0, 30); 
+                    
+                limitedData.forEach(station => {
+                    // 각 충전소에 마커 추가
+                    const marker = L.marker([station.latitude, station.longitude]).addTo(map);
+                    marker.bindPopup(`<b>${station.stnPlace}</b><br>${station.stnAddr}`);
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>
