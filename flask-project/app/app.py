@@ -1,12 +1,23 @@
 from flask import Flask, jsonify, request, Response, render_template
-from blueprints.api import fetch_data, fetch_car_cnt
+from blueprints.api import fetch_car_cnt  # fetch_car_cnt만 가져옴
 from dotenv import load_dotenv
 import os 
 import json
+import requests  # 외부 API 호출을 위해 추가
 from functools import lru_cache
 
 # 환경 변수 로드 
 load_dotenv()
+
+# fetch_data 함수 정의
+def fetch_data(endpoint, api_key, params):
+    try:
+        params['apiKey'] = api_key
+        response = requests.get(endpoint, params=params)
+        response.raise_for_status()  # 응답 상태 코드가 200이 아닐 경우 예외 발생
+        return response.json()  # JSON 형식으로 데이터 반환
+    except requests.exceptions.RequestException as e:
+        return {"error": str(e)}
 
 class DataLoader:
     @staticmethod
@@ -65,7 +76,6 @@ class EVChargeApp:
         self.ev_service = EVChargeService()
         self.configure_routes()
         
-        
     def configure_routes(self):
         @self.app.route('/api/get_EVinfo/all')
         def get_EVInfo_All():
@@ -115,8 +125,6 @@ class EVChargeApp:
         
         return results
     
-    
-    
     def run(self):
         self.app.run(debug=True)
 
@@ -124,11 +132,9 @@ class EVChargeApp:
 # 기존의 carCnt API를 위한 Flask 앱 정의
 app = Flask(__name__)
 
-
 # API를 호출하고 데이터를 반환하는 라우트
 @app.route('/api/carCnt', methods=['GET'])
 def get_carCnt():
-    # 요청 시 필요한 파라미터 설정
     try:
         year = request.args.get('year')
         region = request.args.get('do')
@@ -146,10 +152,10 @@ def get_carCnt():
 
 # Flask 서버 실행
 if __name__ == '__main__':
-    use_ev_charge_app = True  # True로 설정하면 EVChargeApp을 실행, False면 app.run() 실행
+    use_ev_charge_app = False  # True로 설정하면 EVChargeApp을 실행, False면 app.run() 실행
     
-    if use_ev_charge_app:  # 실행 방식을 분기
+    if use_ev_charge_app:
         ev_charge_app = EVChargeApp()
         ev_charge_app.run()
     else:
-        app.run(host='0.0.0.0', port=5001, debug=True)
+        app.run(host='127.0.0.1', port=5001, debug=True)
